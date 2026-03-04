@@ -1,0 +1,42 @@
+experiment_name: "NCV_Experiments_Reg"
+task: "regression"
+supports_scaling: true
+
+pca_components:
+  - null
+  - 0.8
+  - 0.9
+  - 0.95
+  - 0.99
+
+testnames:
+  - PhonemicFluency
+  - BostonNamingTest
+  - MiniMentalStatus
+  - RecallWordList
+  - RecognizeWordList
+  - VerbalFluency
+
+paths:
+  metadata_path: "data/splits/train_metadata.csv"
+  frozen_split: "data/splits/frozen_split.csv"
+  cache_dir: "data/cache"
+  results_dir: "results/"
+
+scaling: "standard"
+
+inner: 3
+outer: 5
+
+targets:
+  - cerad_total_score_chandler
+
+feature_configs:
+  - config/features/fusion_rl_pf_mmse_hubert.yaml
+  - config/features/fusion_rl_pf_hubert.yaml
+  - config/features/fusion_rl_pf_hubert_mmse_eg.yaml
+
+model_configs:
+  - config/models/ridge_reg.yaml
+  - config/models/svr.yaml
+  - config/models/xgboost_regr.yaml

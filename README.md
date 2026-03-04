@@ -97,7 +97,7 @@ To verify the pipeline using the provided synthetic data:
 ```bash
 pip install -r requirements.txt
 ```
-
+(Tested with Python 3.10 on Linux.)
 ## 2. Execute Modeling Demo
 ```bash
 python demo/run_hierarchical_pipeline.py

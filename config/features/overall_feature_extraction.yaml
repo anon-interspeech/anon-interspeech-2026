@@ -1,0 +1,22 @@
+seed: 42
+
+audio:
+  target_sr: 16000
+
+models:
+  device: "cuda" # or "cpu"
+  wav2vec2: "facebook/wav2vec2-base-960h"
+  hubert: "facebook/hubert-large-ls960-ft"
+
+
+extractors:
+  run_egmaps: true
+  run_wav2vec2: true
+  run_hubert: true
+
+egmaps_settings:
+  level: "functionals" 
+  prosody_keywords: ["F0", "loudness", "VoicedSegment", "UnvoicedSegment", "PeaksPerSec", "Level"]
+  vq_keywords: ["jitter", "shimmer", "HNR", "F1", "F2", "F3", "alphaRatio", "hammarberg", "slope", "mfcc", "flux"]
+
+

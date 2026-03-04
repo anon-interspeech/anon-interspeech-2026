@@ -1,0 +1,19 @@
+accoustic_prep:
+  hp_cutoff: [100]      
+  order: [6]                
+
+denoising:
+  prop_decrease: [0.3] 
+
+diarization:
+  # Segmentation group
+  min_duration_off: [2.0]
+  heuristics: ["composite"]   
+
+  # Clustering group
+  threshold: [0.98]            
+  min_cluster_size: [2]     
+  
+  num_speakers: [2]            
+
+

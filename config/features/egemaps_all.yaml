@@ -1,0 +1,4 @@
+name: "egemaps_all"
+filename: "summary_egmaps_all.parquet"
+drop_columns: ["file_id","source_filename"]
+scaling: "standard"

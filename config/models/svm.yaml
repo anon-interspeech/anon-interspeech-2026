@@ -1,0 +1,8 @@
+name: "SVM"
+params:
+  C: [0.01, 0.1, 1.0, 10.0] 
+  kernel: ["linear", "rbf"] 
+  gamma: ["scale", "auto", 0.001, 0.01] 
+  class_weight: ["balanced"]
+  probability: [True]
+  random_state: [42]

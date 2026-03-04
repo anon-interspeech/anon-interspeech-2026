@@ -1,0 +1,15 @@
+champions:
+- feature: eGeMAPS All
+  id: MCI_Binary_MiniMentalStatus_eGeMAPS All
+  model_type: SVM
+  ncv_score: "0.616 \xB1 0.067"
+  params:
+    model__C: 0.01
+    model__class_weight: balanced
+    model__gamma: scale
+    model__kernel: linear
+    model__probability: true
+    model__random_state: 42
+    pca__n_components: null
+  target: MCI Binary
+  task: MiniMentalStatus

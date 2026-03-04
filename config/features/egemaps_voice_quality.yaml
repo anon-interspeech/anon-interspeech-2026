@@ -1,0 +1,4 @@
+name: "egemaps_voice_quality"
+filename: "summary_vq_egmaps.parquet"
+drop_columns: ["file_id","source_filename"]
+scaling: "standard"

@@ -1,0 +1,4 @@
+name: "egemaps_prosody"
+filename: "summary_egmaps.parquet"
+drop_columns: ["file_id","source_filename"]
+scaling: "standard"

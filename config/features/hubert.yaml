@@ -1,0 +1,4 @@
+name: "hubert"
+filename: "hubert_layer_10.parquet"
+drop_columns: ["source_filename"]
+scaling: "standard"

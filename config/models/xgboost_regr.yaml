@@ -1,0 +1,6 @@
+name: "XGBRegressor"
+params:
+  n_estimators: [100, 200,500]
+  max_depth: [3, 5, 7]
+  learning_rate: [0.01, 0.1]
+  subsample: [0.8]
