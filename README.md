@@ -1,10 +1,11 @@
-# Beyond Binary: Large-Scale Hierarchical Cognitive Assessment from Real-World Speech
+# Beyond Binary: Beyond Binary: Speech Representations Across the Cognitive Score Hierarchy
 
 This repository contains the implementation and experimental framework for the anonymous Interspeech 2026 submission:
 
-> **"Beyond Binary: Large-Scale Hierarchical Cognitive Assessment from Real-World Speech"**
+> **"Beyond Binary: Beyond Binary: Speech Representations Across the Cognitive Score Hierarchy"**
 
-The project investigates the relationship between speech representations and the hierarchical structure of clinical cognitive assessment across three distinct levels:
+The project investigates how speech-derived representations relate to the hierarchical structure of clinical cognitive assessment.
+Rather than focusing solely on binary diagnosis, the study models cognitive outcomes across multiple levels of the clinical scoring hierarchy.
 
 ---
 
@@ -21,7 +22,7 @@ Composite scores for:
 - Visuospatial Function  
 
 ### Level 3 — Global Status
-- CERAD total scores  
+- CERAD total score (coninous and binarised at 85)
 - Mild Cognitive Impairment (MCI) status  
 
 ---
@@ -61,62 +62,154 @@ All models include internal hyperparameter optimization.
 
 ```text
 .
-├── preprocessing/      # Signal cleaning, diarization, and quality assessment
-├── features/           # eGeMAPS extraction and SSL embedding pipelines
-├── models/             # Nested CV framework and model architectures
-├── configs/            # Hyperparameter grids and target definitions
-├── demo/               # Implementation walkthrough using synthetic data
-└── requirements.txt    # Essential dependencies
+├── 00_optional_quality_control.sh
+├── 01_run_preprocessing_scaled.sh
+├── 02_run_feature_extraction.sh
+├── 03_A_run_nested_cross_val.sh
+├── 03_B_run_nested_cross_val_w_regression.sh
+├── 04_validate_on_holdout.sh
+├── README.md
+├── config
+│   ├── datasets.sh
+│   ├── features
+│   │   ├── egemaps_all.yaml
+│   │   ├── egemaps_prosody.yaml
+│   │   ├── egemaps_voice_quality.yaml
+│   │   ├── hubert.yaml
+│   │   ├── overall_feature_extraction.yaml
+│   │   └── wav2vec2.yaml
+│   ├── mci_winner.yaml
+│   ├── models
+│   │   ├── logreg.yaml
+│   │   ├── ridge_reg.yaml
+│   │   ├── svm.yaml
+│   │   ├── svr.yaml
+│   │   ├── xgboost.yaml
+│   │   └── xgboost_regr.yaml
+│   ├── nested_cross_validation.yaml
+│   ├── nested_cross_validation_regression.yaml
+│   └── preprocessing
+│       ├── best_hyperparameters_preprocessing.yaml
+│       └── hyperparameters_preprocessing.yaml
+├── data
+│   ├── cache
+│   └── splits
+├── full_pipeline.sh
+├── requirements.txt
+└── src
+    ├── cross_validation
+    │   ├── cv_engine_extended_logging_logits.py
+    │   └── cv_engine_extended_logging_logits_w_reg.py
+    ├── data
+    │   ├── loading
+    │   │   └── data_handler.py
+    │   ├── preprocessing
+    │   │   └── acoustic_preprocessing_scale.py
+    │   ├── qc
+    │   │   └── qc.py
+    │   └── standardisation
+    │       └── comparison.py
+    ├── features
+    │   └── overall_feature_extraction.py
+    ├── final_training_best_model
+    │   └── final_train.py
+    └── models
+        ├── nested_cross_val_opt_parallel.py
+        └── nested_cross_val_opt_parallel_w_regression.py
 ```
 
-# Data Privacy and Ethics
+# Dataset Configuration
+All cognitive tasks (from CERAD+ or MMSE) used in the pipeline are defined in:
+```
+config/datasets.sh
+```
+All pipeline stages automatically read this configuration to ensure consistent dataset usage across preprocessing, feature extraction, and modeling.
 
-The data utilized in this study consists of sensitive clinical recordings from a German-speaking geriatric cohort. Due to ethical restrictions and legal regulations concerning participant privacy (Institutional Ethics Committee), raw audio recordings and clinical metadata cannot be made publicly available.
+# Data Privacy and Ethics 
+The data used in this study consists of sensitive clinical recordings from a German-speaking geriatric cohort.
 
-To facilitate the review process and demonstrate the integrity of the modeling framework, the `demo/` directory contains a **synthetic dataset**.  
+Due to ethical restrictions and institutional review board regulations, the following cannot be publicly released:
+- raw speech recordings
+- clinical metadata
+- participant identifiers 
 
-This dummy data mirrors:
-- The structure  
-- Feature dimensionality  
-- Hierarchical labels  
+The repository therefore provides the full modeling and evaluation framework, enabling replication of the experimental pipeline while preserving participant privacy.
 
-of the original study.
-
-This enables verification of:
-- ID-disjoint splitting logic  
-- Hierarchical prediction trajectories described in the manuscript  
-
----
-
-# Setup and Reproduction
-
-To verify the pipeline using the provided synthetic data:
-
-## 1. Install Dependencies
-
+# Setup:
+## 1. Create Environment:
+```
+conda create -n speech_env python=3.10
+ conda activate speech_env
+  pip install -r requirements.txt
+```
+## 2. Execute Pipeline:
+Each stage of the pipeline can be executed independently.
+### Audio Quality Control 
 ```bash
-pip install -r requirements.txt
+bash 00_optional_quality_control.sh
 ```
-(Tested with Python 3.10 on Linux.)
-## 2. Execute Modeling Demo
+### Acoustic Preprocessing
 ```bash
-python demo/run_hierarchical_pipeline.py
+bash 01_run_preprocessing_scaled.sh
+```
+### Feature Extraction
+```bash
+bash 02_run_feature_extraction.sh
+```
+### Nested Cross-Validation (Classification)
+```bash
+bash 03_A_run_nested_cross_val.sh
+```
+### Nested Cross-Validation (Regression)
+```bash
+bash 03_B_run_nested_cross_val_w_regression.sh
+```
+### Hold-out Evaluation
+```bash
+bash 04_validate_on_holdout.sh
+```
+### Running the Full Pipeline
+```bash
+bash run_pipeline.sh
 ```
 
-# Implementation Details 
-## Accoustic Analysis 
-Handcrafted features are extracted using the Geneva Minimalistic Acoustic Parameter Set (eGeMAPS) via the OpenSMILE library.
-## SSL Models 
-Transformer-based embeddings are processed using the HuggingFace Transformers library.
-## Optimization
-Hyperparameter tuning is conducted within the inner loop of the NCV using a grid search strategy, optimizing for:
+# Implementation Details
+## Acoustic Feature Extraction
 
-- Balanced Accuracy (classification)
+Handcrafted acoustic descriptors are extracted using the Geneva Minimalistic Acoustic Parameter Set (eGeMAPS) via the OpenSMILE toolkit.
 
-- R-squared (regression)
+## Self-Supervised Speech Models
 
-## Anonymization 
-In accordance with double-blind review requirements, all institutional and author identifiers have been removed from the source code and metadata.
+Transformer-based speech embeddings are extracted using the HuggingFace Transformers library.
 
-## Citation 
-Author information and full citation details will be updated upon publication.
+Supported models include:
+
+- wav2vec 2.0
+
+- HuBERT
+
+## Optimization Strategy
+
+Hyperparameter tuning occurs within the inner cross-validation loop.
+
+Optimization metrics:
+
+- Balanced Accuracy for classification tasks
+
+- R² score for regression tasks
+
+## Anonymization
+
+To comply with double-blind review requirements, all identifying information has been removed from the repository, including:
+
+- author names
+
+- institutional affiliations
+
+- project-specific infrastructure references
+
+- These details will be restored upon publication.
+
+# Citation
+
+Citation information will be added upon publication.

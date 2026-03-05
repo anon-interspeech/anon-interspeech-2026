@@ -1,22 +1,21 @@
 #!/bin/bash
-
 set -e
 
+ENV_NAME="speech_env"
+
 CONFIG="config/mci_winner.yaml"
-SCRIPT="src/final_training_best_model/final_train.py"
+SCRIPT="src/models/run_bakery.py"
 
-echo "Starting holdout evaluation..."
-echo "Using config: $CONFIG"
-echo "Running script: $SCRIPT"
+echo "Starting holdout validation"
 echo "Start time: $(date)"
+echo "Using config: $CONFIG"
 
-source ~/.bashrc
+CONDA_BASE=$(conda info --base)
+source "$CONDA_BASE/etc/profile.d/conda.sh"
+conda activate $ENV_NAME
 
-if command -v conda &> /dev/null; then
-    conda activate speech_ssh
-fi
+python -u "$SCRIPT" \
+    --config "$CONFIG"
 
-python -u $SCRIPT
-
-echo "Finished holdout evaluation"
+echo "Finished holdout validation"
 echo "End time: $(date)"

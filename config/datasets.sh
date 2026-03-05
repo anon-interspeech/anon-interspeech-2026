@@ -1,0 +1,8 @@
+DATASETS=(
+BostonNamingTest
+MiniMentalStatus
+PhonemicFluency
+RecallWordList
+RecognizeWordList
+VerbalFluency
+)
